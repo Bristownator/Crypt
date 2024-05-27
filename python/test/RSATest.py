@@ -4,12 +4,8 @@ from python.src.RSA import RSA, RSAKeyGenerator, RSAKey, Prime
 
 
 class RSATest(unittest.TestCase):
-    @staticmethod
-    def test_generate_keys():
-        test = RSA()
-        test.generate_keys()
 
-    def test_encrypt(self):
+    def test_generate_keys(self):
         test = RSA()
         test.generate_keys()
         self.assertEqual(17, test.decrypt(test.encrypt(17)))
