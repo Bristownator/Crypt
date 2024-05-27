@@ -19,6 +19,11 @@ class RSATest(unittest.TestCase):
         test_alt_rsa = RSA(RSAKey(143, 7), RSAKey(143, 103))
         self.assertEqual(105, test_alt_rsa.decrypt(test_alt_rsa.encrypt(105)))
 
+    def test_too_large_encrypt(self):
+        test_alt_rsa = RSA(RSAKey(143, 7), RSAKey(143, 103))
+        with self.assertRaises(ValueError):
+            test_alt_rsa.encrypt(200)
+
 
 class RSAKeyGeneratorTest(unittest.TestCase):
     def setUp(self):

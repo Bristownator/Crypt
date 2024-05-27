@@ -13,6 +13,8 @@ class RSA:
         self.private_key = RSAKey(keys.n, keys.d)
 
     def encrypt(self, plain_text):
+        if plain_text > self.public_key.modulus:
+            raise ValueError('Plain text was larger than the key\'s modulus!')
         return pow(plain_text, self.public_key.exponent, self.public_key.modulus)
 
     def decrypt(self, cipher_text):
