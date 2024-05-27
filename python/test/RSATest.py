@@ -24,6 +24,15 @@ class RSATest(unittest.TestCase):
         with self.assertRaises(ValueError):
             test_alt_rsa.encrypt(200)
 
+        with self.assertRaises(ValueError):
+            test_alt_rsa.decrypt(200)
+
+        with self.assertRaises(ValueError):
+            test_alt_rsa.encrypt(143)
+
+        with self.assertRaises(ValueError):
+            test_alt_rsa.decrypt(143)
+
 
 class RSAKeyGeneratorTest(unittest.TestCase):
     def setUp(self):
