@@ -67,10 +67,13 @@ class Prime:
         while not prime:
             output = secrets.randbits(self.bits)
             if output > 2 ** (self.bits - 1):
-                prime = self.prime(output)
+                prime = self.is_prime(output)
         return output
 
-    def prime(self, number):
+    def is_prime(self, number):
+        if number % 2 == 0:
+            return False
+
         b = 0
         m = number - 1
         remainder = "Temp"
