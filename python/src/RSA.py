@@ -2,9 +2,9 @@ import secrets
 
 
 class RSA:
-    def __init__(self):
-        self.public_key = None
-        self.private_key = None
+    def __init__(self, public_key=None, private_key=None):
+        self.public_key = public_key
+        self.private_key = private_key
 
     def generate_keys(self):
         keys = RSAKeyGenerator()
@@ -58,15 +58,15 @@ class RSAKey:
 
 
 class Prime:
-    def __init__(self, bits):
-        self.bits = bits
+    def __init__(self, bit_len):
+        self.bit_len = bit_len
 
     def get_number(self):
         output = None
         prime = False
         while not prime:
-            output = secrets.randbits(self.bits)
-            if output > 2 ** (self.bits - 1):
+            output = secrets.randbits(self.bit_len)
+            if output > 2 ** (self.bit_len - 1):
                 prime = self.is_prime(output)
         return output
 
@@ -86,7 +86,7 @@ class Prime:
 
         a = 0
         while a % 2 == 0 & a < number:
-            a = secrets.randbits(self.bits)
+            a = secrets.randbits(self.bit_len)
 
         z = pow(a, m, number)
 
