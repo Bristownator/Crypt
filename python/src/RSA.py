@@ -1,61 +1,43 @@
 import secrets
 
 
-class RSA:
-    def __init__(self, public_key=None, private_key=None):
-        self.public_key = public_key
-        self.private_key = private_key
-
-    def generate_keys(self):
-        keys = RSAKeyGenerator()
-        keys.generate_keys()
-        self.public_key = RSAKey(keys.n, keys.e)
-        self.private_key = RSAKey(keys.n, keys.d)
-
-    def encrypt(self, plain_text):
-        if plain_text >= self.public_key.modulus:
-            raise ValueError('Plain text was larger than key\'s modulus!')
-        return pow(plain_text, self.public_key.exponent, self.public_key.modulus)
-
-    def decrypt(self, cipher_text):
-        if cipher_text >= self.private_key.modulus:
-            raise ValueError('Cipher text was larger than key\'s modulus!')
-        return pow(cipher_text, self.private_key.exponent, self.private_key.modulus)
-
-
 class RSAKeyGenerator:
-    def __init__(self):
-        self.p = Prime(1024).get_number()
-        self.q = Prime(1024).get_number()
-        self.n = self.p * self.q
-        self.phi_n = (self.p - 1) * (self.q - 1)
-        self.e = None
-        self.d = None
 
     def generate_keys(self):
+        p = Prime(1024).generate_number()
+        q = Prime(1024).generate_number()
+        n = p * q
+        phi_n = (p - 1) * (q - 1)
+
         gcd = [0]
         exponent = None
         while gcd[0] != 1:
             exponent = secrets.randbits(1024)
-            gcd = self.extended_euclidean(self.phi_n, exponent)
-        self.e = exponent
-        self.d = gcd[2] % self.phi_n
+            gcd = self.__extended_euclidean(phi_n, exponent)
 
-    def extended_euclidean(self, phi_n, e):
+        return RSAPublicKey(n, exponent), RSAPrivateKey(n, gcd[2] % phi_n)
+
+    def __extended_euclidean(self, phi_n, e):
         large = max(phi_n, e)
         small = min(phi_n, e)
 
         if large % small == 0:
             return [small, 0, 1]
 
-        output = self.extended_euclidean(small, large % small)
+        output = self.__extended_euclidean(small, large % small)
 
         a = output[2]
         b = output[1] - ((large // small) * a)
         return [output[0], a, b]
 
 
-class RSAKey:
+class RSAPrivateKey:
+    def __init__(self, modulus, exponent):
+        self.modulus = modulus
+        self.exponent = exponent
+
+
+class RSAPublicKey:
     def __init__(self, modulus, exponent):
         self.modulus = modulus
         self.exponent = exponent
@@ -65,16 +47,16 @@ class Prime:
     def __init__(self, bit_len):
         self.bit_len = bit_len
 
-    def get_number(self):
+    def generate_number(self):
         output = None
-        prime = False
-        while not prime:
+        is_prime = False
+        while not is_prime:
             output = secrets.randbits(self.bit_len)
             if output > 2 ** (self.bit_len - 1):
-                prime = self.is_prime(output)
+                is_prime = self.__is_prime(output)
         return output
 
-    def is_prime(self, number):
+    def __is_prime(self, number):
         if number % 2 == 0:
             return False
 
